@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "quinteger.rampant.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "rampant.refmap.json",
+  "mixins": [
+    "MixinLivingEntity",
+    "MixinPlayerEntity",
+    "MixinWitherEntity"
+  ],
+  "minVersion": "0.8"
+}

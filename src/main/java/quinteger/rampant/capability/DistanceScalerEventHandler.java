@@ -11,6 +11,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import quinteger.rampant.Rampant;
 import quinteger.rampant.config.RampantConfig;
 import quinteger.rampant.util.EntityUtils;
+import quinteger.rampant.util.MathUtils;
 
 import java.util.UUID;
 
@@ -74,32 +75,26 @@ public class DistanceScalerEventHandler {
             double scalingStep = RampantConfig.SCALING_STEP.get() / coordinateScale;
 
             ModifiableAttributeInstance attrInstance = livingEntity.getAttribute(MAX_HEALTH);
+
             // Null-check due to @Nullable
-            if (attrInstance ==  null) return;
+            if (attrInstance != null) {
+                float healthMultiplier = MathUtils.calculateHealthMultiplier(totalDistance, safeDistance, scalingStep, livingEntity);
 
-            float healthMultiplier = (float) Math.min(
-                    Math.min(
-                            Math.pow(RampantConfig.HEALTH_SCALING_FACTOR.get(),
-                                    (totalDistance - safeDistance) / scalingStep),
-                            RampantConfig.MAX_SCALED_HEALTH.get() / livingEntity.getMaxHealth()),
-                    RampantConfig.MAX_HEALTH_MULTIPLIER.get()
-            );
-            float damageMultiplier = (float) Math.min(
-                    Math.pow(RampantConfig.DAMAGE_SCALING_FACTOR.get(),
-                            (totalDistance - safeDistance) / scalingStep),
-                    RampantConfig.MAX_DAMAGE_MULTIPLIER.get()
-            );
+                UUID uuid = UUID.randomUUID();
+                attrInstance.addPermanentModifier(new AttributeModifier(
+                        uuid,
+                        "Distance scaling modifier for maximum health",
+                        healthMultiplier - 1,
+                        Operation.MULTIPLY_TOTAL));
 
-            UUID uuid = UUID.randomUUID();
-            attrInstance.addPermanentModifier(new AttributeModifier(
-                    uuid,
-                    "Distance scaling modifier for maximum health",
-                    healthMultiplier - 1,
-                    Operation.MULTIPLY_TOTAL));
-            livingEntity.setHealth(livingEntity.getHealth() * healthMultiplier);
+                // Respect entity current health percentage
+                livingEntity.setHealth(livingEntity.getHealth() * healthMultiplier);
 
-            scaler.setHealthAttributeModifier(uuid);
-            scaler.setHealthMultiplier(healthMultiplier);
+                scaler.setHealthAttributeModifier(uuid);
+                scaler.setHealthMultiplier(healthMultiplier);
+            }
+
+            float damageMultiplier = MathUtils.calculateDamageMultiplier(totalDistance, safeDistance, scalingStep);
             scaler.setDamageMultiplier(damageMultiplier);
 
             scaler.setApplied(true);

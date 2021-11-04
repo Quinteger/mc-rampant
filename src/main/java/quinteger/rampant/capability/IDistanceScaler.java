@@ -7,12 +7,15 @@ import java.util.UUID;
 public interface IDistanceScaler {
 
     /**
-     * Used to mark the scaler as active. If set to true, the entity will not be scaled further by
-     * {@link DistanceScalerEventHandler#onEntityJoinWorldEvent(EntityJoinWorldEvent)}
-     * and damage multiplier will start to fuction.
+     * Used to mark the scaler as active.<br>
+     * New entities are created with this flag set to {@code false}.
+     * It serves as a signal for {@link DistanceScalerEventHandler#onEntityJoinWorldEvent(EntityJoinWorldEvent)}.
+     * The handler calculates multipliers and sets this flag to {@code true},
+     * which causes the entity to be skipped during further firings of this event
+     * (for example, if the entity gets transported) and enables the damage multiplier.
      *
      * @param value whether this scaler capability is ready and should be applied.
-     * @see #setApplied(boolean) 
+     * @see #isApplied()
      */
     void setApplied(boolean value);
 
@@ -26,7 +29,7 @@ public interface IDistanceScaler {
 
     /**
      * Stores the UUID of {@link net.minecraft.entity.ai.attributes.AttributeModifier},
-     * which scales the health of the entity owning this capability.
+     * that performs health scaling related to this capability.
      *
      * @param uuid the UUID to store
      * @see #getHealthAttributeModifier()
@@ -35,7 +38,7 @@ public interface IDistanceScaler {
 
     /**
      * Returns the UUID of {@link net.minecraft.entity.ai.attributes.AttributeModifier},
-     * which scales the health of the entity owning this capability.
+     * that performs health scaling related to this capability.
      *
      * @return the modifier's UUID
      * @see #setHealthAttributeModifier(UUID) 

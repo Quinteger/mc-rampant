@@ -30,8 +30,7 @@ public class DistanceScalerProvider implements ICapabilitySerializable<CompoundN
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        //TODO: Fix the unchecked cast
-        return distanceScalerLazyOptional.cast();
+        return CapabilityDistanceScaler.DISTANCE_SCALER_CAPABILITY.orEmpty(cap, distanceScalerLazyOptional);
     }
 
     @Override

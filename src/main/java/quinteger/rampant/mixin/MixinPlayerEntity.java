@@ -26,6 +26,6 @@ public abstract class MixinPlayerEntity extends LivingEntity {
      */
     @ModifyVariable(method = "hurtCurrentlyUsedShield(F)V", at = @At("HEAD"), argsOnly = true, ordinal = 0, require = 1)
     private float onHurtCurrentlyUsedShieldModifyDamage(float capture) {
-        return Math.min(capture, RampantConfig.MAX_DAMAGE_TO_SHIELD.get().floatValue());
+        return Math.min(capture, RampantConfig.MAX_DAMAGE_TO_SHIELD.get().floatValue() - 1);
     }
 }

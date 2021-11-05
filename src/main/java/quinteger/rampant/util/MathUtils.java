@@ -8,40 +8,38 @@ public class MathUtils {
     private MathUtils() {}
 
     public static float calculateHealthMultiplier(double totalDistance, double safeDistance, double scalingStep, LivingEntity livingEntity) {
-        float result;
-        double intermediate;
-        switch (RampantConfig.SCALING_METHOD.get()) {
-            case LINEAR: default:
-                intermediate = 1 + ((totalDistance - safeDistance) / scalingStep)
-                        * (RampantConfig.HEALTH_SCALING_FACTOR.get() - 1);
-                break;
-            case EXPONENT:
-                intermediate = Math.pow(RampantConfig.HEALTH_SCALING_FACTOR.get(),
-                        (totalDistance - safeDistance) / scalingStep);
-                break;
-        }
-        result = (float) Math.min(
+        return (float) Math.min(
                 Math.min(
-                        intermediate,
+                        calculateRawHealthMultiplier(totalDistance, safeDistance, scalingStep),
                         RampantConfig.MAX_SCALED_HEALTH.get() / livingEntity.getMaxHealth()),
                 RampantConfig.MAX_HEALTH_MULTIPLIER.get());
-        return result;
+    }
+
+    private static double calculateRawHealthMultiplier(double totalDistance, double safeDistance, double scalingStep) {
+        switch (RampantConfig.SCALING_METHOD.get()) {
+            case LINEAR: default:
+                return 1 + ((totalDistance - safeDistance) / scalingStep)
+                        * (RampantConfig.HEALTH_SCALING_FACTOR.get() - 1);
+            case EXPONENT:
+                return Math.pow(RampantConfig.HEALTH_SCALING_FACTOR.get(),
+                        (totalDistance - safeDistance) / scalingStep);
+        }
     }
 
     public static float calculateDamageMultiplier(double totalDistance, double safeDistance, double scalingStep) {
-        float result;
-        double intermediate;
+        return (float) Math.min(
+                calculateRawDamageMultiplier(totalDistance, safeDistance, scalingStep),
+                RampantConfig.MAX_DAMAGE_MULTIPLIER.get());
+    }
+
+    private static double calculateRawDamageMultiplier(double totalDistance, double safeDistance, double scalingStep) {
         switch (RampantConfig.SCALING_METHOD.get()) {
             case LINEAR: default:
-                intermediate = 1 + ((totalDistance - safeDistance) / scalingStep)
+                return 1 + ((totalDistance - safeDistance) / scalingStep)
                         * (RampantConfig.DAMAGE_SCALING_FACTOR.get() - 1);
-                break;
             case EXPONENT:
-                intermediate = Math.pow(RampantConfig.DAMAGE_SCALING_FACTOR.get(),
+                return Math.pow(RampantConfig.DAMAGE_SCALING_FACTOR.get(),
                         (totalDistance - safeDistance) / scalingStep);
-                break;
         }
-        result = (float) Math.min(intermediate, RampantConfig.MAX_DAMAGE_MULTIPLIER.get());
-        return result;
     }
 }

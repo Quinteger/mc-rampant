@@ -10,7 +10,7 @@ import net.minecraftforge.common.capabilities.CapabilityManager;
 import javax.annotation.Nullable;
 
 /**
- * Static holder for our capability and a static method to register it during mod setup.
+ * Static holder for our capability, static method to register it during mod setup and NBT storage implementation.
  */
 public class CapabilityDistanceScaler {
 

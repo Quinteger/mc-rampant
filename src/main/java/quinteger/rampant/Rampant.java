@@ -11,7 +11,7 @@ import quinteger.rampant.config.RampantConfig;
 import quinteger.rampant.setup.ModSetup;
 import quinteger.rampant.util.AttributeUtils;
 
-@Mod("rampant")
+@Mod(Rampant.MODID)
 public class Rampant
 {
     public static final String MODID = "rampant";

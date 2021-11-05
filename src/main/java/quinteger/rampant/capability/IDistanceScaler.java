@@ -29,7 +29,7 @@ public interface IDistanceScaler {
 
     /**
      * Stores the UUID of {@link net.minecraft.entity.ai.attributes.AttributeModifier},
-     * that performs health scaling related to this capability.
+     * that performs health scaling on behalf of this capability.
      *
      * @param uuid the UUID to store
      * @see #getHealthAttributeModifier()
@@ -38,7 +38,7 @@ public interface IDistanceScaler {
 
     /**
      * Returns the UUID of {@link net.minecraft.entity.ai.attributes.AttributeModifier},
-     * that performs health scaling related to this capability.
+     * that performs health scaling on behalf of this capability.
      *
      * @return the modifier's UUID
      * @see #setHealthAttributeModifier(UUID) 

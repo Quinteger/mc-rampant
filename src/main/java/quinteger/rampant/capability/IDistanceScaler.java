@@ -2,6 +2,7 @@ package quinteger.rampant.capability;
 
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 public interface IDistanceScaler {
@@ -43,6 +44,7 @@ public interface IDistanceScaler {
      * @return the modifier's UUID
      * @see #setHealthAttributeModifier(UUID) 
      */
+    @Nullable
     UUID getHealthAttributeModifier();
 
     /**

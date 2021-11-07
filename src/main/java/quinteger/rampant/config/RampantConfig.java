@@ -7,6 +7,10 @@ import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.config.ModConfig;
 import quinteger.rampant.Rampant;
+import quinteger.rampant.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RampantConfig {
     public static final Builder BUILDER = new Builder();
@@ -27,6 +31,15 @@ public class RampantConfig {
 
     public static final ConfigValue<Double> MAX_SCALED_HEALTH;
     public static final ConfigValue<Double> MAX_DAMAGE_TO_SHIELD;
+
+    public static final ConfigValue<Boolean> BLACKLIST_ENABLED;
+    public static final ConfigValue<List<?>> BLACKLIST;
+
+    public static final ConfigValue<Boolean> WHITELIST_ENABLED;
+    public static final ConfigValue<List<?>> WHITELIST;
+
+    public static final ConfigValue<Boolean> FORCELIST_ENABLED;
+    public static final ConfigValue<List<?>> FORCELIST;
 
     static {
         BUILDER.push(Rampant.MODID);
@@ -67,10 +80,12 @@ public class RampantConfig {
         ).defineEnum("scalingMethod", ScalingMethod.LINEAR, EnumGetMethod.NAME_IGNORECASE);
 
         MAX_HEALTH_MULTIPLIER = BUILDER.comment(
-                "\nFinal calculated health multiplier will not be higher than this value."
+                "\nFinal calculated health multiplier will not be higher than this value.\n" +
+                        "You probably won't need to change this."
         ).defineInRange("maxHealthMultiplier", 1e12D, 1D, Float.MAX_VALUE);
         MAX_DAMAGE_MULTIPLIER = BUILDER.comment(
-                "\nFinal calculated damage multiplier will not be higher than this value."
+                "\nFinal calculated damage multiplier will not be higher than this value.\n" +
+                        "You probably won't need to change this."
         ).defineInRange("maxDamageMultiplier", 1e12D, 1D, Float.MAX_VALUE);
 
         MAX_SCALED_HEALTH = BUILDER.comment(
@@ -83,6 +98,36 @@ public class RampantConfig {
                         "This limit is needed due to a bug in vanilla code and is patched via a mixin.\n" +
                         "You probably won't need to change this."
         ).defineInRange("maxDamageToShield", 1e9D, 1000D, 2e9D);
+
+        BLACKLIST_ENABLED = BUILDER.comment(
+                "\nToggle for entity type blacklist."
+        ).define("blacklistEnabled", false);
+        BLACKLIST = BUILDER.comment(
+                "\nBlacklisted entities in ResourceLocation format. Allows using * as a wildcard for an entire mod.\n" +
+                        "Example: [\"minecraft:skeleton\", \"mymod:*\"]\n" +
+                        "If blacklist is enabled, these entities will be excluded from distance scaling.\n" +
+                        "Blacklist has priority over whitelist and forcelist."
+        ).defineList("blacklist", new ArrayList<>(), StringUtils::stringCheck);
+
+        WHITELIST_ENABLED = BUILDER.comment(
+                "\nToggle for entity type whitelist."
+        ).define("whitelistEnabled", false);
+        WHITELIST = BUILDER.comment(
+                "\nWhitelisted entities in ResourceLocation format. Allows using * as a wildcard for an entire mod.\n" +
+                        "Example: [\"minecraft:skeleton\", \"mymod:*\"]\n" +
+                        "If whitelist is enabled, this will be an exclusive list of entities eligible for distance scaling.\n" +
+                        "Whitelist has priority over forcelist and is overridden by blacklist."
+        ).defineList("whitelist", new ArrayList<>(), StringUtils::stringCheck);
+
+        FORCELIST_ENABLED = BUILDER.comment(
+                "\nToggle for entity type forcelist."
+        ).define("forcelistEnabled", false);
+        FORCELIST = BUILDER.comment(
+                "\nForcelisted entities in ResourceLocation format. Allows using * as a wildcard for an entire mod.\n" +
+                        "Example: [\"minecraft:skeleton\", \"mymod:*\"]\n" +
+                        "If forcelist is enabled, these entities will be valid for distance scaling even if they don't pass standard checks.\n" +
+                        "Forcelist is overridden by whitelist and blacklist."
+        ).defineList("forcelist", new ArrayList<>(), StringUtils::stringCheck);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

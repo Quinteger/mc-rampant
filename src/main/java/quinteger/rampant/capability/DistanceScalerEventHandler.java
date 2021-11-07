@@ -32,7 +32,7 @@ public class DistanceScalerEventHandler {
         Entity entity = event.getObject();
 
         // Check for server-side and entity validity
-        if (!EntityUtils.isEligibleForDistanceScaling(entity)) return;
+        if (!EntityUtils.isEligibleForDistanceScalerApplication(entity)) return;
 
         DistanceScalerProvider provider = new DistanceScalerProvider();
         event.addCapability(new ResourceLocation(Rampant.MODID, "distance_scaling"), provider);
